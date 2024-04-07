@@ -2,15 +2,19 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-07 17:13:56
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-07 17:35:23
+ * @LastEditTime : 2024-04-07 19:23:07
  */
 #include <iostream>
 #include <cstring>
 
-#include "opencv2/dnn/dnn.hpp"
-#include "opencv2/opencv.hpp"
+#include "detection.hpp"
 
-void Classification_good()
+void detection::test()
+{
+    std::cout << "Hello World!" << std::endl;
+}
+
+void detection::classification()
 {
     // 装载模型，设置参数
     // clock_t st = clock();
@@ -21,7 +25,7 @@ void Classification_good()
     dnn_model.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
 
     float scale = 1.0 / 255;
-    int inpWidth = 1920, inpHeight = 1080;
+    int inpWidth = 1920, inpHeight = 1280;
     cv::Scalar mean(0, 0, 0);
     dnn_model.setInputParams(scale, cv::Size(inpWidth, inpHeight), mean, true, false);
 
