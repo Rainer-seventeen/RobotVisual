@@ -19,7 +19,7 @@ FIND_PACKAGE(Threads)
 
 
 # 设置头文件包含
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/detection/include)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 
 
 
