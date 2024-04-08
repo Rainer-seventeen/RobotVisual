@@ -10,8 +10,6 @@
 #include "detection/detection.hpp"
 #include "detection/core.hpp"
 
-const char *class_names[] = {"Abyss Shriek", "Little Knight", "Shade Soil", "Soul Tyrant"}; // 类目名称
-
 void detection::run()
 {
     // TODO:需要在这里完成subscribe模式

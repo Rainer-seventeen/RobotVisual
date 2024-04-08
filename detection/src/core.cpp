@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 22:31:15
+ * @LastEditTime : 2024-04-08 22:48:42
  */
 #include "detection/core.hpp"
 
@@ -15,8 +15,7 @@ using namespace dnn;
 /// @param img  Mat输入图像
 /// @param model_path onnx路径
 /// @return
-template <typename _Tp>
-int yolov8_onnx(_Tp &task, Mat &img, string &model_path)
+int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path)
 {
     if (task.ReadModel(model_path, false))
         cout << "read net ok!" << endl; // TODO:实际上没有用，待解决_asset问题
@@ -49,7 +48,7 @@ int yolov8_onnx(_Tp &task, Mat &img, string &model_path)
 void detection::core()
 {
 
-    string img_path = "detection/database/1.jpg";
+    string img_path = "detection/database/6.jpg";
 
     string model_path_detect = "detection/weights/best.onnx";
 

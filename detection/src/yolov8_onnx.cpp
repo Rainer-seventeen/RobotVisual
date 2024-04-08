@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 21:40:38
+ * @LastEditTime : 2024-04-08 22:50:48
  */
 #include "detection/yolov8_onnx.h"
 using namespace std;
@@ -225,9 +225,9 @@ bool Yolov8Onnx::OnnxBatchDetect(std::vector<cv::Mat> &srcImgs, std::vector<std:
 		all_data += one_output_length;
 		float *pdata = (float *)output0.data;
 		int rows = output0.rows;
-		std::vector<int> class_ids;		// ���id����
-		std::vector<float> confidences; // ���ÿ��id��Ӧ���Ŷ�����
-		std::vector<cv::Rect> boxes;	// ÿ��id���ο�
+		std::vector<int> class_ids;		// 结果id数组
+		std::vector<float> confidences; // 结果每个id对应置信度数组
+		std::vector<cv::Rect> boxes;	// 每个id矩形框
 		for (int r = 0; r < rows; ++r)
 		{ // stride
 			cv::Mat scores(1, socre_array_length, CV_32F, pdata + 4);
@@ -249,7 +249,7 @@ bool Yolov8Onnx::OnnxBatchDetect(std::vector<cv::Mat> &srcImgs, std::vector<std:
 				confidences.push_back(max_class_socre);
 				boxes.push_back(Rect(left, top, int(w + 0.5), int(h + 0.5)));
 			}
-			pdata += net_width; // ��һ��
+			pdata += net_width; // 下一行
 		}
 
 		vector<int> nms_result;
