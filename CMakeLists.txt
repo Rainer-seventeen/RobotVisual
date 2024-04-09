@@ -25,7 +25,7 @@ SET(ONNX_RUNTIME_PATH "/usr/local")
 # FIND_PACKAGE(Eigen3 REQUIRED)
 FIND_PACKAGE(OpenCV  REQUIRED)
 FIND_PACKAGE(Threads)
-FIND_PACKAGE(onnxruntime)
+# FIND_PACKAGE(onnxruntime)
 
 
 # 设置头文件包含
