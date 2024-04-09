@@ -1,3 +1,9 @@
+/*
+ * @Author       : Rainer-seventeen 1652018592@qq.com
+ * @Date         : 2024-04-08 16:32:14
+ * @LastEditors  : Rainer-seventeen
+ * @LastEditTime : 2024-04-09 18:00:35
+ */
 #pragma once
 #include <iostream>
 #include <memory>
@@ -81,5 +87,7 @@ private:
 
 public:
 	std::vector<std::string> _className = {
-		"Abyss Shriek", "Little Knight", "Shade Soil", "Soul Tyrant"};
+		"cup"
+		// "Abyss Shriek", "Little Knight", "Shade Soil", "Soul Tyrant"
+	};
 };

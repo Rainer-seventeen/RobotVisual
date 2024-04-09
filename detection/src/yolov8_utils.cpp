@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 11:11:52
+ * @LastEditTime : 2024-04-09 17:59:41
  */
 
 #include "detection/yolov8_utils.h"
@@ -241,8 +241,15 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 		putText(img, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 1, COLOR, 2);
 	}
 	addWeighted(img, 0.5, mask, 0.5, 0, img); // add mask to src
-	imshow("1", img);
-	if (!isVideo)
-		waitKey();
+
+	if (true)
+	{
+		namedWindow("Result", WINDOW_FREERATIO);
+		imshow("Result", img);
+
+		if (!isVideo)
+			waitKey();
+	}
+
 	// destroyAllWindows();
 }

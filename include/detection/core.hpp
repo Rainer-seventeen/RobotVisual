@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:37:28
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 10:43:43
+ * @LastEditTime : 2024-04-09 14:20:00
  */
 
 #ifndef DETECTION_CORE_HPP
@@ -19,7 +19,6 @@
 namespace detection
 {
     void core(); // 外部只需要调用core即可，不需要定义
-
 }
 
 #endif
