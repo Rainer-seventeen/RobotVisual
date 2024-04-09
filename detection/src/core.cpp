@@ -2,20 +2,21 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 22:48:42
+ * @LastEditTime : 2024-04-09 11:20:48
  */
 #include "detection/core.hpp"
 
 using namespace std;
 using namespace cv;
 using namespace dnn;
+
 /// @brief 使用ONNX模型检测
 /// @tparam _Tp
 /// @param task Class Yolov8Onnx
 /// @param img  Mat输入图像
 /// @param model_path onnx路径
 /// @return
-int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path)
+int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputParams> &result)
 {
     if (task.ReadModel(model_path, false))
         cout << "read net ok!" << endl; // TODO:实际上没有用，待解决_asset问题
@@ -23,7 +24,6 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path)
         return -1;
 
     vector<Scalar> color;
-    srand(time(0));
     for (int i = 0; i < 10; i++) // TODO 不需要随机颜色，只需要一种检测框就行了
     {
         int b = 0;
@@ -32,15 +32,9 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path)
         color.push_back(Scalar(b, g, r));
     }
 
-    vector<OutputParams> result;
-
-    if (task.OnnxDetect(img, result))
-        DrawPred(img, result, task._className, color);
-    else
+    if (!task.OnnxDetect(img, result))
         cout << "Detect Failed!" << endl;
 
-    cv::waitKey(0);
-    // system("pause");
     return 0;
 }
 
@@ -48,24 +42,47 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path)
 void detection::core()
 {
 
-    string img_path = "detection/database/6.jpg";
+    string img_path = "detection/database/3.jpg";
 
     string model_path_detect = "detection/weights/best.onnx";
 
     Mat src = imread(img_path);
     Mat img = src.clone();
 
+    vector<OutputParams> result; // 结果存储位置
     Yolov8Onnx task_detect_ort;
 
-    yolov8_onnx(task_detect_ort, img, model_path_detect);
+    yolov8_onnx(task_detect_ort, img, model_path_detect, result);
+
+    // 测试结果，输出
+    vector<int>::size_type sz = result.size();
+    if (sz == 0)
+        std::cout << "ERROR:Target Not Found!" << endl;
+    else
+    {
+        std::cout << "<======DetectionData======>" << endl;
+        for (int i = 0; i < sz; i++)
+        {
+            std::cout << "POINT      :" << i << endl;
+            std::cout << "rec-x      :" << result[i].box.x << endl;
+            std::cout << "rec-y      :" << result[i].box.y << endl;
+            std::cout << "rec-w      :" << result[i].box.width << endl;
+            std::cout << "rec-h      :" << result[i].box.height << endl;
+            std::cout << "confidence :" << result[i].confidence << endl;
+            std::cout << "id         :" << task_detect_ort._className[result[i].id] << endl;
+        }
+    }
+
+    DrawPred(img, result, task_detect_ort._className);
+    cv::waitKey(0);
 
 #ifdef VIDEO_OPENCV
     video_demo(task_detect_ocv, model_path_detect);
-    // video_demo(task_segment_ocv, model_path_seg);
+// video_demo(task_segment_ocv, model_path_seg);
 #else
-    // video_demo(task_detect_ort, model_path_detect);
-    // video_demo(task_rtdetr_ort, model_path_rtdetr);
-    // video_demo(task_segment_ort, model_path_seg);
+// video_demo(task_detect_ort, model_path_detect);
+// video_demo(task_rtdetr_ort, model_path_rtdetr);
+// video_demo(task_segment_ort, model_path_seg);
 #endif
 }
 
