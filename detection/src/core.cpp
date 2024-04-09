@@ -2,13 +2,17 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 11:30:36
+ * @LastEditTime : 2024-04-09 17:57:57
  */
+#include "detection/core.hpp"
 #include "detection/core.hpp"
 
 using namespace std;
 using namespace cv;
 using namespace dnn;
+
+#define VIDEO
+#define DEBUG
 
 /// @brief 使用ONNX模型检测
 /// @tparam _Tp
@@ -32,15 +36,15 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputPar
 /// @brief 主要运行文件，执行检测的main，用于被run函数调用
 void detection::core()
 {
+    string model_path_detect = "detection/weights/cup.onnx";
+    Yolov8Onnx task_detect_ort;
+    vector<OutputParams> result; // 结果存储信息
 
+#ifndef VIDEO
     string img_path = "detection/database/3.jpg";
-    string model_path_detect = "detection/weights/best.onnx";
 
     Mat src = imread(img_path);
     Mat img = src.clone();
-
-    vector<OutputParams> result; // 结果存储信息
-    Yolov8Onnx task_detect_ort;
 
     yolov8_onnx(task_detect_ort, img, model_path_detect, result);
 
@@ -63,97 +67,103 @@ void detection::core()
         }
     }
     // TODO 目前输出坐标和框的逻辑，不适用于摄像头
+
     DrawPred(img, result, task_detect_ort._className);
     cv::waitKey(0);
 
-#ifdef VIDEO_OPENCV
-    video_demo(task_detect_ocv, model_path_detect);
-// video_demo(task_segment_ocv, model_path_seg);
 #else
-// video_demo(task_detect_ort, model_path_detect);
-// video_demo(task_rtdetr_ort, model_path_rtdetr);
-// video_demo(task_segment_ort, model_path_seg);
+
+    cv::VideoCapture cap(0);
+    // 读取，打开摄像头
+    if (!cap.isOpened())
+    {
+        std::cout << "ERROR: Open Capture Failed!" << std::endl;
+        return;
+    }
+
+#ifdef DEBUG
+    std::cout << "TASK: Captrue Opened" << std::endl;
+#endif
+
+    Mat frame;
+
+    if (task_detect_ort.ReadModel(model_path_detect, true))
+        cout << "TASK: Read Net OK!" << endl;
+    else
+        cout << "ERROR: Read Net Failed!" << endl;
+
+    while (true)
+    {
+        cap.read(frame);
+        if (frame.empty())
+        {
+            std::cout << "ERROR:Failed To Read Frame From Camera!" << std::endl;
+            break;
+        }
+        result.clear();
+
+        auto begin = std::chrono::high_resolution_clock::now(); // 测试时间用，起始时间
+        task_detect_ort.OnnxDetect(frame, result);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+        printf(" %.3f ms.\n", elapsed.count() * 1e-6);
+        DrawPred(frame, result, task_detect_ort._className, true);
+        waitKey(1);
+    }
+
+    cap.release();
+    destroyAllWindows();
+
 #endif
 }
 // TODO 引入相机流传输功能
-/*
-    template <typename _Tp>
-    int video_demo(_Tp &task, string &model_path)
+
+#if 0
+template <typename _Tp>
+int video_demo(_Tp &task, std::string &model_path)
+{
+    vector<OutputParams> result;
+    cv::VideoCapture cap(0);
+    // 读取，打开摄像头 if (!cap.isOpened())
     {
-        vector<Scalar> color;
-        srand(time(0));
-        for (int i = 0; i < 80; i++)
-        {
-            int b = rand() % 256;
-            int g = rand() % 256;
-            int r = rand() % 256;
-            color.push_back(Scalar(b, g, r));
-        }
-        vector<OutputParams> result;
-        cv::VideoCapture cap(0);
-        if (!cap.isOpened())
-        {
-            std::cout << "open capture failured!" << std::endl;
-            return -1;
-        }
-        Mat frame;
-#ifdef VIDEO_OPENCV
-        Net net;
-        if (task.ReadModel(net, model_path, true))
-        {
-            cout << "read net ok!" << endl;
-        }
-        else
-        {
-            cout << "read net failured!" << endl;
-            return -1;
-        }
-
-#else
-        if (task.ReadModel(model_path, true))
-        {
-            cout << "read net ok!" << endl;
-        }
-        else
-        {
-            cout << "read net failured!" << endl;
-            return -1;
-        }
-
-#endif
-
-        while (true)
-        {
-
-            cap.read(frame);
-            if (frame.empty())
-            {
-                std::cout << "read to end" << std::endl;
-                break;
-            }
-            result.clear();
-#ifdef VIDEO_OPENCV
-
-            if (task.Detect(frame, net, result))
-            {
-                DrawPred(frame, result, task._className, color, true);
-            }
-#else
-            if (task.OnnxDetect(frame, result))
-            {
-                DrawPred(frame, result, task._className, color, true);
-            }
-#endif
-            int k = waitKey(10);
-            if (k == 27)
-            { // esc
-                break;
-            }
-        }
-        cap.release();
-
-        system("pause");
-
-        return 0;
+        std::cout << "open capture failured!" << std::endl;
+        return -1;
     }
-    */
+    Mat frame;
+
+    if (task.ReadModel(model_path, true))
+        cout << "read net ok!" << endl;
+    else
+    {
+        cout << "read net failured!" << endl;
+        return -1;
+    }
+
+    while (true)
+    {
+        cap.read(frame);
+        if (frame.empty())
+        {
+            std::cout << "read to end" << std::endl;
+            break;
+        }
+        result.clear();
+
+        if (task.OnnxDetect(frame, result))
+        {
+            DrawPred(frame, result, task._className, true);
+        }
+
+        int k = waitKey(10);
+        if (k == 27)
+        { // esc
+            break;
+        }
+    }
+    cap.release();
+
+    waitKey(0);
+    return 0;
+}
+
+#endif
