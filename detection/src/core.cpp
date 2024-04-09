@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 11:20:48
+ * @LastEditTime : 2024-04-09 11:30:36
  */
 #include "detection/core.hpp"
 
@@ -19,18 +19,9 @@ using namespace dnn;
 int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputParams> &result)
 {
     if (task.ReadModel(model_path, false))
-        cout << "read net ok!" << endl; // TODO:实际上没有用，待解决_asset问题
+        cout << "read net ok!" << endl; // 如果路径不存在，不会报错。
     else
         return -1;
-
-    vector<Scalar> color;
-    for (int i = 0; i < 10; i++) // TODO 不需要随机颜色，只需要一种检测框就行了
-    {
-        int b = 0;
-        int g = 0;
-        int r = 256;
-        color.push_back(Scalar(b, g, r));
-    }
 
     if (!task.OnnxDetect(img, result))
         cout << "Detect Failed!" << endl;
@@ -38,18 +29,17 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputPar
     return 0;
 }
 
-/// @brief 主要运行文件，执行检测的main
+/// @brief 主要运行文件，执行检测的main，用于被run函数调用
 void detection::core()
 {
 
     string img_path = "detection/database/3.jpg";
-
     string model_path_detect = "detection/weights/best.onnx";
 
     Mat src = imread(img_path);
     Mat img = src.clone();
 
-    vector<OutputParams> result; // 结果存储位置
+    vector<OutputParams> result; // 结果存储信息
     Yolov8Onnx task_detect_ort;
 
     yolov8_onnx(task_detect_ort, img, model_path_detect, result);
@@ -72,7 +62,7 @@ void detection::core()
             std::cout << "id         :" << task_detect_ort._className[result[i].id] << endl;
         }
     }
-
+    // TODO 目前输出坐标和框的逻辑，不适用于摄像头
     DrawPred(img, result, task_detect_ort._className);
     cv::waitKey(0);
 
@@ -85,8 +75,7 @@ void detection::core()
 // video_demo(task_segment_ort, model_path_seg);
 #endif
 }
-
-// TODO 检测视频
+// TODO 引入相机流传输功能
 /*
     template <typename _Tp>
     int video_demo(_Tp &task, string &model_path)
