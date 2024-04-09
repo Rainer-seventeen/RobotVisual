@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 21:41:59
+ * @LastEditTime : 2024-04-09 11:11:52
  */
 
 #include "detection/yolov8_utils.h"
@@ -201,44 +201,44 @@ int BBox2Obb(float centerX, float centerY, float boxW, float boxH, float angle, 
 	rotatedRect = RotatedRect(Point2f(centerX, centerY), Size2f(boxW, boxH), angle);
 	return 0;
 }
-void DrawRotatedBox(cv::Mat &srcImg, cv::RotatedRect box, cv::Scalar color, int thinkness)
+void DrawRotatedBox(cv::Mat &srcImg, cv::RotatedRect box, int thinkness)
 {
 	Point2f p[4];
 	box.points(p);
 	for (int l = 0; l < 4; ++l)
 	{
-		line(srcImg, p[l], p[(l + 1) % 4], color, thinkness, 8);
+		line(srcImg, p[l], p[(l + 1) % 4], COLOR, thinkness, 8);
 	}
 }
 
-void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> classNames, vector<Scalar> color, bool isVideo)
+void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> classNames, bool isVideo)
 {
 	Mat mask = img.clone();
 	for (int i = 0; i < result.size(); i++)
 	{
 		int left, top;
 
-		int color_num = i;
+		// int color_num = i;
 		if (result[i].box.area() > 0)
 		{
-			rectangle(img, result[i].box, color[result[i].id], 2, 8);
+			rectangle(img, result[i].box, COLOR, 2, 8);
 			left = result[i].box.x;
 			top = result[i].box.y;
 		}
 		if (result[i].rotatedBox.size.width * result[i].rotatedBox.size.height > 0)
 		{
-			DrawRotatedBox(img, result[i].rotatedBox, color[result[i].id], 2);
+			DrawRotatedBox(img, result[i].rotatedBox, 2);
 			left = result[i].rotatedBox.center.x;
 			top = result[i].rotatedBox.center.y;
 		}
 		if (result[i].boxMask.rows && result[i].boxMask.cols > 0)
-			mask(result[i].box).setTo(color[result[i].id], result[i].boxMask);
+			mask(result[i].box).setTo(COLOR, result[i].boxMask);
 		string label = classNames[result[i].id] + ":" + to_string(result[i].confidence);
 		int baseLine;
 		Size labelSize = getTextSize(label, FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 		top = max(top, labelSize.height);
 		// rectangle(frame, Point(left, top - int(1.5 * labelSize.height)), Point(left + int(1.5 * labelSize.width), top + baseLine), Scalar(0, 255, 0), FILLED);
-		putText(img, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 1, color[result[i].id], 2);
+		putText(img, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 1, COLOR, 2);
 	}
 	addWeighted(img, 0.5, mask, 0.5, 0, img); // add mask to src
 	imshow("1", img);

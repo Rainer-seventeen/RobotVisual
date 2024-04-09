@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 21:23:53
+ * @LastEditTime : 2024-04-09 11:07:20
  */
 #pragma once
 #include <iostream>
@@ -11,6 +11,8 @@
 #include <sys/io.h>
 
 #define ORT_OLD_VISON 13
+
+const cv::Scalar COLOR(0, 0, 256);
 struct OutputParams
 {
 	int id;						// 结果类别id
@@ -36,9 +38,8 @@ bool CheckParams(int netHeight, int netWidth, const int *netStride, int strideSi
 void DrawPred(cv::Mat &img,
 			  std::vector<OutputParams> result,
 			  std::vector<std::string> classNames,
-			  std::vector<cv::Scalar> color,
 			  bool isVideo = false);
-void DrawRotatedBox(cv::Mat &srcImg, cv::RotatedRect box, cv::Scalar color, int thinkness);
+void DrawRotatedBox(cv::Mat &srcImg, cv::RotatedRect box, int thinkness);
 void LetterBox(const cv::Mat &image, cv::Mat &outImage,
 			   cv::Vec4d &params, //[ratio_x,ratio_y,dw,dh]
 			   const cv::Size &newShape = cv::Size(640, 640),

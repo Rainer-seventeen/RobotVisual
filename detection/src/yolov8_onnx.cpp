@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-08 22:50:48
+ * @LastEditTime : 2024-04-09 10:23:09
  */
 #include "detection/yolov8_onnx.h"
 using namespace std;
@@ -16,52 +16,44 @@ bool Yolov8Onnx::ReadModel(const std::string &modelPath, bool isCuda, int cudaID
 		_batchSize = 1;
 	try
 	{
-		// if (!CheckModelPath(modelPath))
-		// 	return false;
+		// TODO 还未确定是否有GPU，不过应该是没有了
+		//  if (!CheckModelPath(modelPath))
+		//  	return false;
 		std::vector<std::string> available_providers = GetAvailableProviders();
 		auto cuda_available = std::find(available_providers.begin(), available_providers.end(), "CUDAExecutionProvider");
 
-		if (isCuda && (cuda_available == available_providers.end()))
-		{
-			std::cout << "Your ORT build without GPU. Change to CPU." << std::endl;
-			std::cout << "************* Infer model on CPU! *************" << std::endl;
-		}
-		else if (isCuda && (cuda_available != available_providers.end()))
-		{
-			std::cout << "************* Infer model on GPU! *************" << std::endl;
-#if ORT_API_VERSION < ORT_OLD_VISON
-			OrtCUDAProviderOptions cudaOption;
-			cudaOption.device_id = cudaID;
-			_OrtSessionOptions.AppendExecutionProvider_CUDA(cudaOption);
-#else
-			OrtStatus *status = OrtSessionOptionsAppendExecutionProvider_CUDA(_OrtSessionOptions, cudaID);
-#endif
-		}
-		else
-		{
-			std::cout << "************* Infer model on CPU! *************" << std::endl;
-		}
+		// 		if (isCuda && (cuda_available == available_providers.end()))
+		// 		{
+		// 			std::cout << "Your ORT build without GPU. Change to CPU." << std::endl;
+		// 			std::cout << "************* Infer model on CPU! *************" << std::endl;
+		// 		}
+		// 		else if (isCuda && (cuda_available != available_providers.end()))
+		// 		{
+		// 			std::cout << "************* Infer model on GPU! *************" << std::endl;
+		// #if ORT_API_VERSION < ORT_OLD_VISON
+		// 			OrtCUDAProviderOptions cudaOption;
+		// 			cudaOption.device_id = cudaID;
+		// 			_OrtSessionOptions.AppendExecutionProvider_CUDA(cudaOption);
+		// #else
+		// 			OrtStatus *status = OrtSessionOptionsAppendExecutionProvider_CUDA(_OrtSessionOptions, cudaID);
+		// #endif
+		// 		}
+		// 		else
+		// 		{
+		std::cout << "************* Infer model on CPU! *************" << std::endl;
+		// }
 		//
 
 		_OrtSessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 
-#ifdef _WIN32
-		std::wstring model_path(modelPath.begin(), modelPath.end());
-		_OrtSession = new Ort::Session(_OrtEnv, model_path.c_str(), _OrtSessionOptions);
-#else
 		_OrtSession = new Ort::Session(_OrtEnv, modelPath.c_str(), _OrtSessionOptions);
-#endif
 
 		Ort::AllocatorWithDefaultOptions allocator;
 		// init input
 		_inputNodesNum = _OrtSession->GetInputCount();
-#if ORT_API_VERSION < ORT_OLD_VISON
+
 		_inputName = _OrtSession->GetInputName(0, allocator);
 		_inputNodeNames.push_back(_inputName);
-#else
-		_inputName = std::move(_OrtSession->GetInputNameAllocated(0, allocator));
-		_inputNodeNames.push_back(_inputName.get());
-#endif
 		// cout << _inputNodeNames[0] << endl;
 		Ort::TypeInfo inputTypeInfo = _OrtSession->GetInputTypeInfo(0);
 		auto input_tensor_info = inputTypeInfo.GetTensorTypeAndShapeInfo();
@@ -81,13 +73,10 @@ bool Yolov8Onnx::ReadModel(const std::string &modelPath, bool isCuda, int cudaID
 		}
 		// init output
 		_outputNodesNum = _OrtSession->GetOutputCount();
-#if ORT_API_VERSION < ORT_OLD_VISON
+
 		_output_name0 = _OrtSession->GetOutputName(0, allocator);
 		_outputNodeNames.push_back(_output_name0);
-#else
-		_output_name0 = std::move(_OrtSession->GetOutputNameAllocated(0, allocator));
-		_outputNodeNames.push_back(_output_name0.get());
-#endif
+
 		Ort::TypeInfo type_info_output0(nullptr);
 		type_info_output0 = _OrtSession->GetOutputTypeInfo(0); // output0
 
@@ -181,6 +170,7 @@ int Yolov8Onnx::Preprocessing(const std::vector<cv::Mat> &srcImgs, std::vector<c
 	}
 	return 0;
 }
+
 bool Yolov8Onnx::OnnxDetect(cv::Mat &srcImg, std::vector<OutputParams> &output)
 {
 	std::vector<cv::Mat> input_data = {srcImg};
@@ -193,6 +183,13 @@ bool Yolov8Onnx::OnnxDetect(cv::Mat &srcImg, std::vector<OutputParams> &output)
 	else
 		return false;
 }
+
+/**
+ * @description: 对一批数据源的检测
+ * @param {vector<cv::Mat>} &srcImgs 输入图像（组）
+ * @param {vector<std::vector<OutputParams>>} &output
+ * @return {*}
+ */
 bool Yolov8Onnx::OnnxBatchDetect(std::vector<cv::Mat> &srcImgs, std::vector<std::vector<OutputParams>> &output)
 {
 	vector<Vec4d> params;
