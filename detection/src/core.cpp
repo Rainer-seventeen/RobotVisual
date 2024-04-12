@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 20:44:38
+ * @LastEditTime : 2024-04-12 20:52:30
  */
 #include "detection/core.hpp"
 
@@ -122,7 +122,8 @@ void detection::core()
 
         DrawPred(frame, result, task_detect_ort._className, true);
         PrintInf(result, task_detect_ort._className);
-        waitKey(1);
+        if (waitKey(1) == 27) // ESC
+            break;
     }
 
     cap.release();
