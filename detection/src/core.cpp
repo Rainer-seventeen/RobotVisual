@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 21:55:25
+ * @LastEditTime : 2024-04-12 23:05:28
  */
 #include "detection/core.hpp"
 
@@ -57,9 +57,11 @@ void detection::core()
     std::cout << "Model Path : ";
     std::cout << model_path_detect << std::endl; // DEBUG
 
-    /*创建检测类*/
+    /*创建类的实例*/
     Yolov8Onnx task_detect_ort;
-    vector<OutputParams> result; // 结果存储信息
+    vector<OutputParams> result;                                      // 结果存储信息
+    umt::Publisher<Detection_pack> detections_pub("detections_pack"); // 检测结果整合包发布器
+    // umt::Subscriber<SensorsData> sensor_sub("sensors_data");  // TODO 订阅传感器信息
     Mat frame;
 
     /*读取摄像头*/
@@ -77,9 +79,11 @@ void detection::core()
     else
         cout << "ERROR: Read Net Failed!" << endl;
 
+    int cnt_useless = -1;
     /*检测循环流程*/
     while (true)
     {
+        Timestamp now = std::chrono::system_clock::now(); // 拿到当前时间戳
         cap.read(frame);
         if (frame.empty())
         {
@@ -94,9 +98,27 @@ void detection::core()
         // auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
         // printf(" %.3f ms.\n", elapsed.count() * 1e-6);
 
-        DrawPred(frame, result, task_detect_ort._className, true);
-        if (waitKey(1) == 27) // ESC
+        /*输出检测结果*/
+        DrawPred(frame, result, task_detect_ort._className, true); // 绘制结果，内部包含了输出到控制台
+        if (waitKey(1) == 27)                                      // ESC
             break;
+
+        /*发布检测结果*/
+        if (!result.empty())
+        {
+            detections_pub.push(Detection_pack{result, now}); // 打包数据,包括检测结果和时间戳
+        }
+        else
+        {
+            if (++cnt_useless == 50)
+            { // 避免输出太多
+                fmt::print(fmt::fg(fmt::color::blue), "No Target detected!");
+                std::cout << std::endl;
+                cnt_useless = -1;
+            }
+            // webview_detections.push(img);
+            continue;
+        }
     }
 
     cap.release();
