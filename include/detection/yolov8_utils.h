@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 20:37:54
+ * @LastEditTime : 2024-04-12 21:58:42
  */
 #pragma once
 #include <iostream>
@@ -51,5 +51,5 @@ void LetterBox(const cv::Mat &image, cv::Mat &outImage,
 void GetMask(const cv::Mat &maskProposals, const cv::Mat &maskProtos, std::vector<OutputParams> &output, const MaskParams &maskParams);
 void GetMask2(const cv::Mat &maskProposals, const cv::Mat &maskProtos, OutputParams &output, const MaskParams &maskParams);
 int BBox2Obb(float centerX, float centerY, float boxW, float boxH, float angle, cv::RotatedRect &rotatedRect);
-void PrintInf(std::vector<OutputParams> result,
-			  std::vector<std::string> classNames);
+void PrintInfo(OutputParams oneresult,
+			   std::vector<std::string> classNames);

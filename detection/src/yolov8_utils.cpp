@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 20:44:24
+ * @LastEditTime : 2024-04-12 21:58:15
  */
 
 #include "detection/yolov8_utils.h"
@@ -239,6 +239,7 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 		top = max(top, labelSize.height);
 		// rectangle(frame, Point(left, top - int(1.5 * labelSize.height)), Point(left + int(1.5 * labelSize.width), top + baseLine), Scalar(0, 255, 0), FILLED);
 		putText(img, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 1, COLOR, 2);
+		PrintInfo(result[i], classNames);
 	}
 	addWeighted(img, 0.5, mask, 0.5, 0, img); // add mask to src
 
@@ -254,24 +255,15 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 	// destroyAllWindows();
 }
 
-void PrintInf(vector<OutputParams> result, std::vector<std::string> classNames)
+void PrintInfo(OutputParams oneresult, std::vector<std::string> classNames)
 {
-	vector<int>::size_type sz = result.size();
-	if (sz == 0)
-	{
-		std::cout << "ERROR:Target Not Found!" << endl;
-		return;
-	}
 
 	std::cout << "<======DetectionData======>" << std::endl;
-	for (int i = 0; i < sz; i++)
-	{
-		std::cout << "POINT      :" << i << std::endl;
-		std::cout << "rec-x      :" << result[i].box.x << std::endl;
-		std::cout << "rec-y      :" << result[i].box.y << std::endl;
-		std::cout << "rec-w      :" << result[i].box.width << std::endl;
-		std::cout << "rec-h      :" << result[i].box.height << std::endl;
-		std::cout << "confidence :" << result[i].confidence << std::endl;
-		std::cout << "id         :" << classNames[result[i].id] << std::endl;
-	}
+
+	std::cout << "rec-x      :" << oneresult.box.x << std::endl;
+	std::cout << "rec-y      :" << oneresult.box.y << std::endl;
+	std::cout << "rec-w      :" << oneresult.box.width << std::endl;
+	std::cout << "rec-h      :" << oneresult.box.height << std::endl;
+	std::cout << "confidence :" << oneresult.confidence << std::endl;
+	std::cout << "id         :" << classNames[oneresult.id] << std::endl;
 }

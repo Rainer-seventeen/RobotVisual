@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 21:29:05
+ * @LastEditTime : 2024-04-12 21:55:25
  */
 #include "detection/core.hpp"
 
@@ -40,20 +40,21 @@ std::string detection::get_model_path()
     char *buffer;
     if ((buffer = getcwd(NULL, 0)) == NULL)
     {
-        perror("ERROR: Cannot Get Current Directory "); // DEBUG
-        return;
+        std::cout << "ERROR: Cannot Get Current Directory!" << std::endl; // DEBUG
+        return "ERROR";
     }
 
     string model_path_detect = buffer;
     model_path_detect += "/detection/weights/best.onnx";
+    return model_path_detect;
 }
 
 /// @brief 主要运行文件，执行检测的main，用于被run函数调用
 void detection::core()
 {
-
     /*获取模型路径*/
     string model_path_detect = get_model_path();
+    std::cout << "Model Path : ";
     std::cout << model_path_detect << std::endl; // DEBUG
 
     /*创建检测类*/
@@ -94,7 +95,6 @@ void detection::core()
         // printf(" %.3f ms.\n", elapsed.count() * 1e-6);
 
         DrawPred(frame, result, task_detect_ort._className, true);
-        PrintInf(result, task_detect_ort._className);
         if (waitKey(1) == 27) // ESC
             break;
     }
