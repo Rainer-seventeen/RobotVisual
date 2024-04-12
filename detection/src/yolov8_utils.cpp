@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 17:59:41
+ * @LastEditTime : 2024-04-12 20:44:24
  */
 
 #include "detection/yolov8_utils.h"
@@ -252,4 +252,26 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 	}
 
 	// destroyAllWindows();
+}
+
+void PrintInf(vector<OutputParams> result, std::vector<std::string> classNames)
+{
+	vector<int>::size_type sz = result.size();
+	if (sz == 0)
+	{
+		std::cout << "ERROR:Target Not Found!" << endl;
+		return;
+	}
+
+	std::cout << "<======DetectionData======>" << std::endl;
+	for (int i = 0; i < sz; i++)
+	{
+		std::cout << "POINT      :" << i << std::endl;
+		std::cout << "rec-x      :" << result[i].box.x << std::endl;
+		std::cout << "rec-y      :" << result[i].box.y << std::endl;
+		std::cout << "rec-w      :" << result[i].box.width << std::endl;
+		std::cout << "rec-h      :" << result[i].box.height << std::endl;
+		std::cout << "confidence :" << result[i].confidence << std::endl;
+		std::cout << "id         :" << classNames[result[i].id] << std::endl;
+	}
 }

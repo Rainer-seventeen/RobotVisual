@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:37:28
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 14:20:00
+ * @LastEditTime : 2024-04-12 14:23:18
  */
 
 #ifndef DETECTION_CORE_HPP
@@ -14,6 +14,7 @@
 #include <math.h>
 #include "detection/yolov8_onnx.h"
 #include <time.h>
+#include <unistd.h>
 // #define  VIDEO_OPENCV //if define, use opencv for video.
 
 namespace detection

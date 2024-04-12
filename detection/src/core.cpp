@@ -2,9 +2,8 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-09 17:57:57
+ * @LastEditTime : 2024-04-12 20:44:38
  */
-#include "detection/core.hpp"
 #include "detection/core.hpp"
 
 using namespace std;
@@ -36,7 +35,20 @@ int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputPar
 /// @brief 主要运行文件，执行检测的main，用于被run函数调用
 void detection::core()
 {
-    string model_path_detect = "detection/weights/cup.onnx";
+
+    // 获取当前文件地址
+    char *buffer;
+    // 也可以将buffer作为输出参数
+    if ((buffer = getcwd(NULL, 0)) == NULL)
+    {
+        perror("getcwd error");
+        return;
+    }
+
+    string model_path_detect = buffer;
+    model_path_detect += "/detection/weights/best.onnx";
+    std::cout << model_path_detect << std::endl;
+
     Yolov8Onnx task_detect_ort;
     vector<OutputParams> result; // 结果存储信息
 
@@ -102,12 +114,14 @@ void detection::core()
         }
         result.clear();
 
-        auto begin = std::chrono::high_resolution_clock::now(); // 测试时间用，起始时间
+        // auto begin = std::chrono::high_resolution_clock::now(); // 测试时间用，起始时间
         task_detect_ort.OnnxDetect(frame, result);
-        auto end = std::chrono::high_resolution_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-        printf(" %.3f ms.\n", elapsed.count() * 1e-6);
+        // auto end = std::chrono::high_resolution_clock::now();
+        // auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+        // printf(" %.3f ms.\n", elapsed.count() * 1e-6);
+
         DrawPred(frame, result, task_detect_ort._className, true);
+        PrintInf(result, task_detect_ort._className);
         waitKey(1);
     }
 
@@ -116,7 +130,6 @@ void detection::core()
 
 #endif
 }
-// TODO 引入相机流传输功能
 
 #if 0
 template <typename _Tp>
