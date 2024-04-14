@@ -2,25 +2,17 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 21:58:42
+ * @LastEditTime : 2024-04-14 21:17:09
  */
 #pragma once
 #include <iostream>
 #include <numeric>
 #include <opencv2/opencv.hpp>
 #include <sys/io.h>
-
+#include "detection/detection_pack.hpp"
 #define ORT_OLD_VISON 13
 
 const cv::Scalar COLOR(0, 0, 256);
-struct OutputParams
-{
-	int id;						// 结果类别id
-	float confidence;			// 结果置信度
-	cv::Rect box;				// 矩形框
-	cv::RotatedRect rotatedBox; // obb结果矩形框
-	cv::Mat boxMask;			// 矩形框内mask，节省内存空间和加快速度
-};
 
 struct MaskParams
 {

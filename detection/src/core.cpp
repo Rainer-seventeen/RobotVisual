@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 23:05:28
+ * @LastEditTime : 2024-04-14 21:12:39
  */
 #include "detection/core.hpp"
 
@@ -123,4 +123,17 @@ void detection::core()
 
     cap.release();
     destroyAllWindows();
+}
+
+void detection::PrintInfo(const OutputParams oneresult, std::vector<std::string> classNames)
+{
+
+    std::cout << "<======DetectionData======>" << std::endl;
+
+    std::cout << "rec-x      :" << oneresult.box.x << std::endl;
+    std::cout << "rec-y      :" << oneresult.box.y << std::endl;
+    std::cout << "rec-w      :" << oneresult.box.width << std::endl;
+    std::cout << "rec-h      :" << oneresult.box.height << std::endl;
+    std::cout << "confidence :" << oneresult.confidence << std::endl;
+    std::cout << "id         :" << classNames[oneresult.id] << std::endl;
 }

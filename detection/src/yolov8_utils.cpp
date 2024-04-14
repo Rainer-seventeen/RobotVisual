@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-12 23:10:59
+ * @LastEditTime : 2024-04-14 21:14:54
  */
 
 #include "detection/yolov8_utils.h"
@@ -241,7 +241,7 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 		top = max(top, labelSize.height);
 		// rectangle(frame, Point(left, top - int(1.5 * labelSize.height)), Point(left + int(1.5 * labelSize.width), top + baseLine), Scalar(0, 255, 0), FILLED);
 		putText(img, label, Point(left, top), FONT_HERSHEY_SIMPLEX, 1, COLOR, 2);
-		PrintInfo(result[i], classNames);
+		// PrintInfo(result[i], classNames);
 	}
 	addWeighted(img, 0.5, mask, 0.5, 0, img); // add mask to src
 
@@ -256,17 +256,4 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 	}
 
 	// destroyAllWindows();
-}
-
-void PrintInfo(OutputParams oneresult, std::vector<std::string> classNames)
-{
-
-	std::cout << "<======DetectionData======>" << std::endl;
-
-	std::cout << "rec-x      :" << oneresult.box.x << std::endl;
-	std::cout << "rec-y      :" << oneresult.box.y << std::endl;
-	std::cout << "rec-w      :" << oneresult.box.width << std::endl;
-	std::cout << "rec-h      :" << oneresult.box.height << std::endl;
-	std::cout << "confidence :" << oneresult.confidence << std::endl;
-	std::cout << "id         :" << classNames[oneresult.id] << std::endl;
 }

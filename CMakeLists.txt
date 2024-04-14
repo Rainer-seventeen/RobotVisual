@@ -39,7 +39,7 @@ include_directories(${Python_INCLUDE_DIRS})
 include_directories(${pybind11_INCLUDE_DIRS})
 
 # 设置所有代码库
-FILE(GLOB_RECURSE sourcefiles "detection/src/*.cpp" )
+FILE(GLOB_RECURSE sourcefiles "detection/src/*.cpp" "control/*.cpp")
 
 
 
