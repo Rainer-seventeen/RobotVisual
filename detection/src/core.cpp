@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-14 21:12:39
+ * @LastEditTime : 2024-04-15 20:21:42
  */
 #include "detection/core.hpp"
 
@@ -59,7 +59,6 @@ void detection::core()
 
     /*创建类的实例*/
     Yolov8Onnx task_detect_ort;
-    vector<OutputParams> result;                                      // 结果存储信息
     umt::Publisher<Detection_pack> detections_pub("detections_pack"); // 检测结果整合包发布器
     // umt::Subscriber<SensorsData> sensor_sub("sensors_data");  // TODO 订阅传感器信息
     Mat frame;
@@ -83,6 +82,7 @@ void detection::core()
     /*检测循环流程*/
     while (true)
     {
+        vector<OutputParams> result;                      // 结果存储信息，每一次都创建一个新的
         Timestamp now = std::chrono::system_clock::now(); // 拿到当前时间戳
         cap.read(frame);
         if (frame.empty())
@@ -99,7 +99,7 @@ void detection::core()
         // printf(" %.3f ms.\n", elapsed.count() * 1e-6);
 
         /*输出检测结果*/
-        DrawPred(frame, result, task_detect_ort._className, true); // 绘制结果，内部包含了输出到控制台
+        DrawPred(frame, result, task_detect_ort._className, true); // 绘制结果，已经将输出函数转移到sub位置部署
         if (waitKey(1) == 27)                                      // ESC
             break;
 
