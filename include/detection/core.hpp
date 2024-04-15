@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:37:28
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-14 21:12:16
+ * @LastEditTime : 2024-04-15 19:36:36
  */
 
 #ifndef DETECTION_CORE_HPP
@@ -18,6 +18,7 @@
 #include "detection/yolov8_onnx.h"
 #include <fmt/format.h>
 #include <fmt/color.h>
+#include <thread>
 
 namespace detection
 {
