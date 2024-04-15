@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-07 18:04:46
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-14 21:53:27
+ * @LastEditTime : 2024-04-15 20:05:06
  */
 
 #include <iostream>
@@ -12,11 +12,11 @@
 
 int main()
 {
-    // TODO 如何实现多线程，尚待学习
-    std::thread Detection(detection::run);
-    std::thread Control(control::core);
+    std::thread(detection::run).detach();
 
-    Detection.join();
-    Control.join();
+    std::this_thread::sleep_for(std::chrono::seconds(3)); // 等待检测热身完毕
+
+    std::thread(control::core).join();
+
     return 0;
 }
