@@ -2,10 +2,9 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:08:24
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-16 14:05:03
+ * @LastEditTime : 2024-04-16 14:12:03
  */
 #include "control/define.hpp"
-#include "define.hpp"
 
 bool control::is_movement(cv::Rect box1, cv::Rect box2)
 {

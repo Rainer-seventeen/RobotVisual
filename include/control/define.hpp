@@ -2,10 +2,12 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:08:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-16 14:06:12
+ * @LastEditTime : 2024-04-16 14:12:45
  */
 
 // TODO:来实现判定是不是与上一个图标是同一个目标，并对物体进行标号
+#ifndef CONTROL_DEFINE_HPP
+#define CONTROL_DEFINE_HPP
 
 #include "detection/yolov8_utils.h"
 #include <cmath>
@@ -23,3 +25,5 @@ namespace control
     // bool is_one_obj(OutputParams now, OutputParams last); // 判断前后两者是不是同一个东西
 
 } // namespace control
+
+#endif

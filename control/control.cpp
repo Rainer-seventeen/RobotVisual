@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:06:04
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-16 13:52:02
+ * @LastEditTime : 2024-04-16 14:19:28
  */
 
 #include "control/control.hpp"
@@ -22,14 +22,20 @@ void control::core()
         // std::cout << "BBB" << std::endl; DEBUG
 
         const auto &[result, timestamp] = detections_sub.pop(); // 没有东西就一直处于挂起状态
+
+        /*时间戳（单位秒）*/
         std::time_t now = std::chrono::system_clock::to_time_t(timestamp);
+        // fmt::print(fmt::fg(fmt::color::blue), "{}\n", now);
+        std::cout << "timestamp  :" << now << std::endl;
 
-        std::cout << now << std::endl; // 打印时间戳（单位秒）
         int sz = result.size();
-
         for (int i = 0; i < sz; ++i)
         {
             detection::PrintInfo(result[i], classNames); // 只有一个输出，不需要锁，不会和notfound冲突
+            if (is_in_middle(result[i].box))
+                fmt::print(fmt::fg(fmt::color::orange), "middle     :TRUE\n");
+            else
+                fmt::print(fmt::fg(fmt::color::blue), "middle     :FALSE\n");
         }
     }
 }
