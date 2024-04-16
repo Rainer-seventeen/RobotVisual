@@ -2,17 +2,24 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:08:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-14 20:23:29
+ * @LastEditTime : 2024-04-16 14:06:12
  */
 
 // TODO:来实现判定是不是与上一个图标是同一个目标，并对物体进行标号
 
 #include "detection/yolov8_utils.h"
+#include <cmath>
 
-static const int MOVE_SPEED = 1; // 假定的单位时间戳物体运动像素
+const int MOVE_SPEED = 1000; // 假定的单位时间戳物体运动像素
+
+/*摄像机的参数*/
+const int CAMERA_X = 1280;
+const int CAMERA_Y = 720;
 
 namespace control
 {
-    bool is_one_obj(OutputParams now, OutputParams last); // 判断前后两者是不是同一个东西
+    bool is_movement(cv::Rect box1, cv::Rect box2);
+    bool is_in_middle(cv::Rect box);
+    // bool is_one_obj(OutputParams now, OutputParams last); // 判断前后两者是不是同一个东西
 
 } // namespace control

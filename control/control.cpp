@@ -2,10 +2,11 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:06:04
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-15 20:28:17
+ * @LastEditTime : 2024-04-16 13:52:02
  */
 
 #include "control/control.hpp"
+#include "control/define.hpp"
 
 void control::core()
 {
@@ -25,9 +26,6 @@ void control::core()
 
         std::cout << now << std::endl; // 打印时间戳（单位秒）
         int sz = result.size();
-
-        // if (sz == 0)
-        //     std::cout << "ERROR: Subscribe Target Not found!" << std::endl; // 这个不会发生，因为如果为空不会publish
 
         for (int i = 0; i < sz; ++i)
         {
