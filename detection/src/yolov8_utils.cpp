@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 16:32:14
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-14 21:14:54
+ * @LastEditTime : 2024-04-16 14:45:06
  */
 
 #include "detection/yolov8_utils.h"
@@ -248,7 +248,7 @@ void DrawPred(Mat &img, vector<OutputParams> result, std::vector<std::string> cl
 	if (true)
 	{
 		namedWindow("Result", WINDOW_FREERATIO);
-		resizeWindow("Result", 1920, 1280);
+		resizeWindow("Result", 1280, 1280);
 		imshow("Result", img);
 
 		if (!isVideo)
