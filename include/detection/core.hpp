@@ -15,7 +15,7 @@
 #include <umt/umt.hpp>
 // #define  VIDEO_OPENCV //if define, use opencv for video.
 #include "detection/detection_pack.hpp"
-#include "detection/yolov8_onnx.h"
+#include "detection/yolov9_onnx.h"
 #include <fmt/format.h>
 #include <fmt/color.h>
 #include <thread>

@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-14 20:06:04
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-16 14:19:28
+ * @LastEditTime : 2024-05-11 21:01:40
  */
 
 #include "control/control.hpp"
@@ -33,9 +33,9 @@ void control::core()
         {
             detection::PrintInfo(result[i], classNames); // 只有一个输出，不需要锁，不会和notfound冲突
             if (is_in_middle(result[i].box))
-                fmt::print(fmt::fg(fmt::color::orange), "middle     :TRUE\n");
+                fmt::print(fmt::fg(fmt::color::orange), "middle     :TRUE\n"); // DEBUG
             else
-                fmt::print(fmt::fg(fmt::color::blue), "middle     :FALSE\n");
+                fmt::print(fmt::fg(fmt::color::blue), "middle     :FALSE\n"); // DEBUG
         }
     }
 }

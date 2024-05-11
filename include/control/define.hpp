@@ -9,7 +9,7 @@
 #ifndef CONTROL_DEFINE_HPP
 #define CONTROL_DEFINE_HPP
 
-#include "detection/yolov8_utils.h"
+#include "detection/yolov9_utils.h"
 #include <cmath>
 
 const int MOVE_SPEED = 1000; // 假定的单位时间戳物体运动像素

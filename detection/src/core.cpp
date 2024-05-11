@@ -2,7 +2,7 @@
  * @Author       : Rainer-seventeen 1652018592@qq.com
  * @Date         : 2024-04-08 21:28:54
  * @LastEditors  : Rainer-seventeen
- * @LastEditTime : 2024-04-15 20:21:42
+ * @LastEditTime : 2024-05-11 21:42:05
  */
 #include "detection/core.hpp"
 
@@ -14,11 +14,11 @@ using namespace dnn;
 
 /// @brief 使用ONNX模型检测
 /// @tparam _Tp
-/// @param task Class Yolov8Onnx
+/// @param task Class Yolov9Onnx
 /// @param img  Mat输入图像
 /// @param model_path onnx路径
 /// @return
-int yolov8_onnx(Yolov8Onnx &task, Mat &img, string &model_path, vector<OutputParams> &result)
+int yolov9_onnx(Yolov9Onnx &task, Mat &img, string &model_path, vector<OutputParams> &result)
 {
     if (task.ReadModel(model_path, false))
         cout << "read net ok!" << endl; // 如果路径不存在，不会报错。
@@ -45,7 +45,7 @@ std::string detection::get_model_path()
     }
 
     string model_path_detect = buffer;
-    model_path_detect += "/detection/weights/best.onnx";
+    model_path_detect += "/detection/weights/Cabbage.onnx";
     return model_path_detect;
 }
 
@@ -58,7 +58,7 @@ void detection::core()
     std::cout << model_path_detect << std::endl; // DEBUG
 
     /*创建类的实例*/
-    Yolov8Onnx task_detect_ort;
+    Yolov9Onnx task_detect_ort;
     umt::Publisher<Detection_pack> detections_pub("detections_pack"); // 检测结果整合包发布器
     // umt::Subscriber<SensorsData> sensor_sub("sensors_data");  // TODO 订阅传感器信息
     Mat frame;
